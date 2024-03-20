@@ -1,6 +1,5 @@
 
 const Header = () => {
-  const total = 100
 
   return (
     <header className="py-5 header">
