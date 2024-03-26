@@ -1,18 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Guitar from './components/Guitar';
 import { db } from './data/db';
 
 function App() {
 
+  const initialCart = () => {
+    const localStorageCart = localStorage.getItem('cart')
+    return localStorageCart ? JSON.parse(localStorageCart) : []
+  }
+
   const [data, setData] = useState(db)
-  const [cart, setCart] = useState([])
+  const [cart, setCart] = useState(initialCart)
 
   const MAX_ITEMS = 5
+  const MIN_ITEMS = 1
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }, [cart])
 
   function addToCart(item) {
     const itemExists = cart.findIndex(guitar => guitar.id === item.id)
     if (itemExists >= 0) {/* Existe en el carrito */
+      if (cart[itemExists].quantity >= MAX_ITEMS) return
       const updateCart = [...cart]
       updateCart[itemExists].quantity++
       setCart(updateCart)
@@ -20,7 +31,6 @@ function App() {
       item.quantity = 1
       // setCart(prevCart => [...prevCart, item])
       setCart([...cart, item])
-
     }
   }
 
@@ -41,9 +51,9 @@ function App() {
     setCart(updateCart)
   }
 
-  function decrementQuantity(id) {
+  function decreaseQuantity(id) {
     const updateCart = cart.map(item => {
-      if (item.id === id && item.quantity > 1) {
+      if (item.id === id && item.quantity > MIN_ITEMS) {
         return {
           ...item,
           quantity: item.quantity - 1
@@ -54,13 +64,18 @@ function App() {
     setCart(updateCart)
   }
 
+  function clearCart(e) {
+    setCart([])
+  }
+
   return (
     <>
       <Header
         cart={cart}
         removeFromCart={removeFromCart}
         increaseQuantity={increaseQuantity}
-        decrementQuantity={decrementQuantity}
+        decreaseQuantity={decreaseQuantity}
+        clearCart={clearCart}
       />
 
       <main className="container-xl mt-5">
