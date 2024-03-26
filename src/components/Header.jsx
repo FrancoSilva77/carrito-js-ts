@@ -1,7 +1,7 @@
 
 import { useMemo } from "react";
 
-const Header = ({ cart, removeFromCart }) => {
+const Header = ({ cart, removeFromCart, increaseQuantity, decrementQuantity }) => {
 
   // State Derivado
   const isEmpty = useMemo(() => cart.length === 0, [cart])
@@ -55,6 +55,7 @@ const Header = ({ cart, removeFromCart }) => {
                               <button
                                 type="button"
                                 className="btn btn-dark"
+                                onClick={() => decrementQuantity(guitar.id)}
                               >
                                 -
                               </button>
@@ -62,6 +63,7 @@ const Header = ({ cart, removeFromCart }) => {
                               <button
                                 type="button"
                                 className="btn btn-dark"
+                                onClick={() => increaseQuantity(guitar.id)}
                               >
                                 +
                               </button>
@@ -70,7 +72,7 @@ const Header = ({ cart, removeFromCart }) => {
                               <button
                                 className="btn btn-danger"
                                 type="button"
-                                onClick={()=> removeFromCart(guitar.id)}
+                                onClick={() => removeFromCart(guitar.id)}
                               >
                                 X
                               </button>
